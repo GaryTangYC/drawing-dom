@@ -5,9 +5,9 @@ const emojis = ['✌', '😂', '😝', '😁', '😱', '👉', '🙌', '🍻', '
 
 // Create container for the buttons and the output
 const buttonContainer = document.createElement('div');
-const emojiOutput = document.createElement('p');
+// const emojiOutput = document.createElement('p');
 document.body.appendChild(buttonContainer);
-document.body.appendChild(emojiOutput);
+// document.body.appendChild(emojiOutput);
 
 // Create randomize button
 const randomButton = document.createElement('button');
@@ -16,6 +16,9 @@ randomButton.innerText = 'Randomize';
 // Function to draw the emoji output based on emoji input and number of rows
 const drawEmojis = (emoji) => {
   let output = '';
+  const index = emojis.indexOf(emoji);
+  const outputContainer = document.getElementById(`emoji-${index}`);
+  outputContainer.style.zIndex = (-1 * sideLength).toString();
 
   for (let i = 0; i < sideLength; i += 1) {
     for (let j = 0; j < sideLength; j += 1) {
@@ -24,17 +27,23 @@ const drawEmojis = (emoji) => {
     output += '<br>';
   }
 
-  emojiOutput.innerHTML = output;
+  outputContainer.innerHTML = output;
 };
 
 // Fill the button container with buttons corresponding to each emoji in the global array
-emojis.forEach((emoji) => {
+emojis.forEach((emoji, index) => {
+  const emojiOutput = document.createElement('p');
+  emojiOutput.id = `emoji-${index}`;
+  emojiOutput.style.position = 'absolute';
+  emojiOutput.style.zIndex = '0';
+  document.body.appendChild(emojiOutput);
+
   const button = document.createElement('button');
   button.innerText = emoji;
   button.addEventListener('click', () => { // when button is clicked, set current emoji
     currentEmoji = emoji;
     sideLength = 0;
-    emojiOutput.innerHTML = '';
+    // emojiOutput.innerHTML = '';
   });
   buttonContainer.appendChild(button);
 });
