@@ -6,6 +6,7 @@ const emojis = ['✌', '😂', '😝', '😁', '😱', '👉', '🙌', '🍻', '
 // Create container for the buttons and the output
 const buttonContainer = document.createElement('div');
 const emojiOutput = document.createElement('p');
+emojiOutput.style.fontSize = '16px';
 document.body.appendChild(buttonContainer);
 document.body.appendChild(emojiOutput);
 
@@ -49,13 +50,19 @@ document.addEventListener('keydown', (e) => {
       sideLength = Number(e.key);
       drawEmojis(currentEmoji);
     } else if (sideLength !== 0 && e.key === 'ArrowUp') {
-      // If the key is arrowup and sideLength has been set, increment it and regenerate output
-      sideLength += 1;
+      // If the key is arrowup and sideLength has been set,
+      // increase font size by 1 to make square bigger
+      const curFontSize = parseInt(emojiOutput.style.fontSize, 10);
+      emojiOutput.style.fontSize = `${curFontSize + 1}px`;
       drawEmojis(currentEmoji);
-    } else if (sideLength > 1 && e.key === 'ArrowDown') {
-      // If the key is arrowdown and sideLength is more than 1, decrement it and regenerate output
-      sideLength -= 1;
-      drawEmojis(currentEmoji);
+    } else if (sideLength !== 0 && e.key === 'ArrowDown') {
+      // If the key is arrowdown and sideLength has been set,
+      // decrease font size by 1 to make square smaller
+      const curFontSize = parseInt(emojiOutput.style.fontSize, 10);
+      if (curFontSize > 1) {
+        emojiOutput.style.fontSize = `${curFontSize - 1}px`;
+        drawEmojis(currentEmoji);
+      }
     }
   }
 });
