@@ -1,6 +1,8 @@
 // Global variables, set currentEmoji to be an empty string at first
 let currentEmoji = '';
 let sideLength = 0;
+const DIFFERENT_EMOJI = '😈';
+let diffEmojiPos = [0, 0]; // Let the different emoji start at 0, 0
 const emojis = ['✌', '😂', '😝', '😁', '😱', '👉', '🙌', '🍻', '🔥', '🌈', '☀', '🎈', '🌹', '💄', '🎀', '⚽', '🎾', '🏁', '😡', '👿', '🐻', '🐶', '🐬', '🐟', '🍀', '👀', '🚗', '🍎', '💝', '💙', '👌', '❤', '😍', '😉', '😓', '😳', '💪', '💩', '🍸', '🔑', '💖', '🌟', '🎉', '🌺', '🎶', '👠', '🏈', '⚾', '🏆', '👽', '💀', '🐵', '🐮', '🐩', '🐎', '💣', '👃', '👂', '🍓', '💘', '💜', '👊', '💋', '😘', '😜', '😵', '🙏', '👋', '🚽', '💃', '💎', '🚀', '🌙', '🎁', '⛄', '🌊', '⛵', '🏀', '🎱', '💰', '👶', '👸', '🐰', '🐷', '🐍', '🐫', '🔫', '👄', '🚲', '🍉', '💛', '💚'];
 
 // Create container for the buttons and the output
@@ -19,7 +21,9 @@ const drawEmojis = (emoji) => {
 
   for (let i = 0; i < sideLength; i += 1) {
     for (let j = 0; j < sideLength; j += 1) {
-      output += emoji;
+      if (sideLength !== 1 && i === diffEmojiPos[0] && j === diffEmojiPos[1]) {
+        output += DIFFERENT_EMOJI;
+      } else output += emoji;
     }
     output += '<br>';
   }
@@ -35,6 +39,7 @@ emojis.forEach((emoji) => {
     currentEmoji = emoji;
     sideLength = 0;
     emojiOutput.innerHTML = '';
+    diffEmojiPos = [0, 0];
   });
   buttonContainer.appendChild(button);
 });
@@ -48,14 +53,22 @@ document.addEventListener('keydown', (e) => {
       // If the key is a number 1-9, then set side length and display square of that current emoji
       sideLength = Number(e.key);
       drawEmojis(currentEmoji);
-    } else if (sideLength !== 0 && e.key === 'ArrowUp') {
-      // If the key is arrowup and sideLength has been set, increment it and regenerate output
-      sideLength += 1;
-      drawEmojis(currentEmoji);
-    } else if (sideLength > 1 && e.key === 'ArrowDown') {
-      // If the key is arrowdown and sideLength is more than 1, decrement it and regenerate output
-      sideLength -= 1;
-      drawEmojis(currentEmoji);
+    } else if (sideLength > 1) {
+      // If sidelength is more than 1, check if key pressed is one of the directional arrows
+      // Then set the different emoji position accordingly, taking into account the edge cases
+      if (e.key === 'ArrowUp') {
+        diffEmojiPos[0] = diffEmojiPos[0] === 0 ? sideLength - 1 : diffEmojiPos[0] - 1;
+        drawEmojis(currentEmoji);
+      } else if (e.key === 'ArrowDown') {
+        diffEmojiPos[0] = diffEmojiPos[0] === sideLength - 1 ? 0 : diffEmojiPos[0] + 1;
+        drawEmojis(currentEmoji);
+      } else if (e.key === 'ArrowLeft') {
+        diffEmojiPos[1] = diffEmojiPos[1] === 0 ? sideLength - 1 : diffEmojiPos[1] - 1;
+        drawEmojis(currentEmoji);
+      } else if (e.key === 'ArrowRight') {
+        diffEmojiPos[1] = diffEmojiPos[1] === sideLength - 1 ? 0 : diffEmojiPos[1] + 1;
+        drawEmojis(currentEmoji);
+      }
     }
   }
 });
